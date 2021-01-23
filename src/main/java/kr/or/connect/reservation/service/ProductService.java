@@ -10,28 +10,36 @@ import kr.or.connect.reservation.dto.ProductImage;
 import kr.or.connect.reservation.dto.ProductPrice;
 import kr.or.connect.reservation.dto.ReservationUserComment;
 
-import kr.or.connect.reservation.dto.ReservationUserCommentImage;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional(readOnly = true)
+@RequiredArgsConstructor
 public class ProductService {
-    private static final int LIMIT = 4;
 
-    @Autowired
-    ProductDao productDao;
+    private static final int PRODUCT_LIMIT = 4;
+    private static final int COMMENT_LIMIT = 5;
 
-    @Autowired
-    ProductRelatedDataDao productRelatedDataDao;
+    private final ProductDao productDao;
+
+    private final ProductRelatedDataDao productRelatedDataDao;
 
     public List<Product> getProductsByCategory(Long categoryId, int start) {
-        return productDao.selectAllByCategory(categoryId, start, LIMIT);
+        return productDao.selectAllByCategory(categoryId, start, PRODUCT_LIMIT);
+    }
+
+    public List<Product> getProducts(int start) {
+        return productDao.selectAll(start, PRODUCT_LIMIT);
     }
 
     public int getCountByCategory(Long categoryId) {
         return productDao.selectCountByCategory(categoryId);
+    }
+
+    public int getCount() {
+        return productDao.selectCount();
     }
 
     public Product getProductByDisplayId(Long displayId) {
@@ -57,7 +65,7 @@ public class ProductService {
     public List<ReservationUserComment> getReservationUserCommentsWithImagesByProductId(
         Long productId, int start) {
         List<ReservationUserComment> comments = productRelatedDataDao
-            .selectReservationUserComments(productId, start, LIMIT);
+            .selectReservationUserComments(productId, start, COMMENT_LIMIT);
         comments.stream()
             .forEach(comment -> comment.setReservationUserCommentImages(
                 productRelatedDataDao.selectReservationUserCommentImages(comment.getId())));

@@ -5,15 +5,16 @@ import java.util.List;
 import kr.or.connect.reservation.dao.CategoryDao;
 import kr.or.connect.reservation.dto.Category;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional(readOnly = true)
+@RequiredArgsConstructor
 public class CategoryService {
-    @Autowired
-    CategoryDao categoryDao;
+
+    private final CategoryDao categoryDao;
 
     public List<Category> getCategories() {
         return categoryDao.selectAllWithProductCount();

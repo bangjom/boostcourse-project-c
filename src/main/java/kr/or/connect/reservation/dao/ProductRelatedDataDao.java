@@ -19,6 +19,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class ProductRelatedDataDao {
+
     private NamedParameterJdbcTemplate jdbc;
 
     public ProductRelatedDataDao(DataSource dataSource) {

@@ -5,15 +5,16 @@ import java.util.List;
 import kr.or.connect.reservation.dao.PromotionDao;
 import kr.or.connect.reservation.dto.Promotion;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class PromotionService {
-    @Autowired
-    PromotionDao promotionDao;
+
+    private final PromotionDao promotionDao;
 
     public List<Promotion> getPromotions() {
-        return promotionDao.selectALl();
+        return promotionDao.selectAll();
     }
 }

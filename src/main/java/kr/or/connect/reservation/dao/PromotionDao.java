@@ -22,7 +22,7 @@ public class PromotionDao {
         this.jdbc = new NamedParameterJdbcTemplate(dataSource);
     }
 
-    public List<Promotion> selectALl() {
+    public List<Promotion> selectAll() {
         return jdbc.query(SELECT_ALL, Collections.emptyMap(), rowMapper);
     }
 }

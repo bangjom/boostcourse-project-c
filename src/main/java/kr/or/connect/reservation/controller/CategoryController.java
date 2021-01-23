@@ -7,19 +7,20 @@ import io.swagger.annotations.ApiResponses;
 import java.util.List;
 
 import kr.or.connect.reservation.dto.Category;
-import kr.or.connect.reservation.dto.GetResponse;
+import kr.or.connect.reservation.dto.PromotionResponse;
 import kr.or.connect.reservation.service.CategoryService;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(path = "/api/categories")
+@RequiredArgsConstructor
 public class CategoryController {
-    @Autowired
-    CategoryService categoryService;
+
+    private final CategoryService categoryService;
 
     @ApiOperation(value = "카테고리 가져오기")
     @ApiResponses({
@@ -27,10 +28,10 @@ public class CategoryController {
         @ApiResponse(code = 500, message = "Exception")
     })
     @GetMapping
-    public GetResponse get() {
+    public PromotionResponse getCategories() {
         int count = categoryService.getCount();
         List<Category> categories = categoryService.getCategories();
 
-        return new GetResponse(count, categories);
+        return new PromotionResponse(count, categories);
     }
 }
