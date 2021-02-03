@@ -3,6 +3,8 @@ package kr.or.connect.reservation.dao;
 import java.util.HashMap;
 import java.util.Map;
 import javax.sql.DataSource;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import kr.or.connect.reservation.dto.Member;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.RowMapper;
@@ -31,6 +33,8 @@ public class MemberDao {
     }
 
     public void addMember(Member member) {
+//        Map map = new ObjectMapper().convertValue(member, Map.class);
+//        map.remove("id");
         insert.execute(new BeanPropertySqlParameterSource(member));
     }
 }

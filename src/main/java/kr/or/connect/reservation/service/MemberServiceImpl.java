@@ -41,6 +41,7 @@ public class MemberServiceImpl implements MemberService{
     }
 
     @Override
+    @Transactional
     public void addMember(Member member, boolean admin) {
         memberDao.addMember(member);
 

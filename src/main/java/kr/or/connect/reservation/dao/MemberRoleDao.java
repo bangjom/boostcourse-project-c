@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.sql.DataSource;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import kr.or.connect.reservation.dto.MemberRole;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.RowMapper;
@@ -33,6 +35,8 @@ public class MemberRoleDao {
     }
 
     public void addRole(MemberRole memberRole) {
+//        Map map = new ObjectMapper().convertValue(memberRole, Map.class);
+//        map.remove("id");
         insert.execute(new BeanPropertySqlParameterSource(memberRole));
     }
 }

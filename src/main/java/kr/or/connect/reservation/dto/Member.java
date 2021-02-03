@@ -1,6 +1,8 @@
 package kr.or.connect.reservation.dto;
 
 import java.time.LocalDateTime;
+
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,14 +17,13 @@ public class Member {
     private LocalDateTime modifyDate;
 
     public Member() {
-        createDate = LocalDateTime.now();
-        modifyDate = LocalDateTime.now();
     }
 
-    public Member(Long id, String name, String password, String email) {
-        this();
+    public Member(String name, String password, String email, LocalDateTime createDate, LocalDateTime modifyDate) {
         this.name = name;
         this.password = password;
         this.email = email;
+        this.createDate = createDate;
+        this.modifyDate = modifyDate;
     }
 }

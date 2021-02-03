@@ -5,11 +5,14 @@ import kr.or.connect.reservation.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.security.Principal;
 
 @Controller
 @RequestMapping("/members")
@@ -39,5 +42,14 @@ public class MemberController {
         member.setPassword(passwordEncoder.encode(member.getPassword()));
         memberService.addMember(member, false);
         return "redirect:/members/loginform";
+    }
+
+    @GetMapping("/memberinfo")
+    public String memberInfo(Principal principal, ModelMap modelMap){
+        String loginId = principal.getName();
+        Member member = memberService.getMemberByEmail(loginId);
+        modelMap.addAttribute("member", member);
+
+        return "members/memberinfo";
     }
 }
