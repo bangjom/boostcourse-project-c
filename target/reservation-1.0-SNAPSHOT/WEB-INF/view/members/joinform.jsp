@@ -17,6 +17,10 @@
         <input type="password" name="password">
     </div>
     <div>
+        <label>전화번호</label>
+        <input type="text" name="tel">
+    </div>
+    <div>
         <label>이메일</label>
         <input type="text" name="email">
     </div>

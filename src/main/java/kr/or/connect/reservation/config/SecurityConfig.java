@@ -21,7 +21,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/webjars/**");
+        web.ignoring()
+                .antMatchers("/v2/api-docs",
+                        "/configuration/ui",
+                        "/swagger-resources/**",
+                        "/configuration/security",
+                        "/swagger-ui.html",
+                        "/webjars/**");
     }
 
     @Override
@@ -32,25 +38,26 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-            .csrf().disable()
-            .authorizeRequests()
-            .antMatchers("/", "/members/loginerror", "/members/joinform",
-                "/members/join", "/members/welcome").permitAll()
-            .antMatchers("/members/**").hasRole("USER")
-            .anyRequest().authenticated()
-            .and()
-            .formLogin()
-            .loginPage("/members/loginform")
-            .usernameParameter("userId")
-            .passwordParameter("password")
-            .loginProcessingUrl("/authenticate")
-            .failureForwardUrl("/members/loginerror?login_error=1")
-            .defaultSuccessUrl("/", true)
-            .permitAll()
-            .and()
-            .logout()
-            .logoutUrl("/logout")
-            .logoutSuccessUrl("/");
+                .csrf().disable()
+                .authorizeRequests()
+                .antMatchers("/", "/members/loginerror", "/members/joinform",
+                        "/members/join", "/members/welcome", "/api/categories",
+                        "/api/displayinfos", "/api/promotions").permitAll()
+                .antMatchers("/members/**", "/api/reservationInfos").hasRole("USER")
+                .anyRequest().authenticated()
+                .and()
+                .formLogin()
+                .loginPage("/members/loginform")
+                .usernameParameter("userId")
+                .passwordParameter("password")
+                .loginProcessingUrl("/authenticate")
+                .failureForwardUrl("/members/loginerror?login_error=1")
+                .defaultSuccessUrl("/", true)
+                .permitAll()
+                .and()
+                .logout()
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/");
     }
 
     @Bean

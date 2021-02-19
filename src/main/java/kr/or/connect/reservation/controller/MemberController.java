@@ -28,7 +28,7 @@ public class MemberController {
     }
 
     @RequestMapping("/loginerror")
-    public String loginerror(@RequestParam String loginError){
+    public String loginerror(@RequestParam("login_error") String loginError){
         return "members/loginerror";
     }
 
