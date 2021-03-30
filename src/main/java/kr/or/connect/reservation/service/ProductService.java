@@ -1,14 +1,12 @@
 package kr.or.connect.reservation.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import kr.or.connect.reservation.dao.ProductDao;
 import kr.or.connect.reservation.dao.ProductRelatedDataDao;
-import kr.or.connect.reservation.dto.DisplayInfoImage;
-import kr.or.connect.reservation.dto.Product;
-import kr.or.connect.reservation.dto.ProductImage;
-import kr.or.connect.reservation.dto.ProductPrice;
-import kr.or.connect.reservation.dto.ReservationUserComment;
+import kr.or.connect.reservation.dao.UserDao;
+import kr.or.connect.reservation.dto.*;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,6 +21,7 @@ public class ProductService {
     private static final int COMMENT_LIMIT = 5;
 
     private final ProductDao productDao;
+    private final UserDao userDao;
 
     private final ProductRelatedDataDao productRelatedDataDao;
 
@@ -62,15 +61,23 @@ public class ProductService {
         return productRelatedDataDao.selectProductPrices(productId);
     }
 
-    public List<ReservationUserComment> getReservationUserCommentsWithImagesByProductId(
-        Long productId, int start) {
+    public List<DisplayinfosComment> getReservationUserCommentsWithImagesByProductId(
+            Long productId, int start) {
         List<ReservationUserComment> comments = productRelatedDataDao
-            .selectReservationUserComments(productId, start, COMMENT_LIMIT);
-        comments.stream()
-            .forEach(comment -> comment.setReservationUserCommentImages(
-                productRelatedDataDao.selectReservationUserCommentImages(comment.getId())));
+                .selectReservationUserComments(productId, start, COMMENT_LIMIT);
+        return comments.stream()
+                .map(comment -> new DisplayinfosComment(comment, productRelatedDataDao.selectReservationUserCommentImages(comment.getId())
+                        , userDao.getMemberById(comment.getUserId()).getEmail()))
+                .collect(Collectors.toList());
+    }
 
-        return comments;
+    public List<Comment> getCommentsWithImagesByProductId(
+            Long productId, int start) {
+        List<ReservationUserComment> comments = productRelatedDataDao
+                .selectReservationUserComments(productId, start, COMMENT_LIMIT);
+        return comments.stream()
+                .map(comment -> new Comment(comment, productRelatedDataDao.selectReservationUserCommentImages(comment.getId())))
+                .collect(Collectors.toList());
     }
 
     public int getReservationUserCommentsCountByProductId(Long productId) {

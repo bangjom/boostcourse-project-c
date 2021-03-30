@@ -60,9 +60,10 @@ public class ReservationDao {
         return jdbc.update(ReservationDaoSqls.DELETE_BY_ID, map);
     }
 
-    public Integer cancelReservationsById(Long reservationId) {
+    public Integer cancelReservationsById(Long reservationId, Long userId) {
         Map<String, Long> map = new HashMap<>();
         map.put("id", reservationId);
+        map.put("userId", userId);
         return jdbc.update(ReservationDaoSqls.CANCEL_BY_ID, map);
     }
 }

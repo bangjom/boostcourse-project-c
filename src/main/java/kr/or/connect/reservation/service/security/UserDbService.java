@@ -2,11 +2,11 @@ package kr.or.connect.reservation.service.security;
 
 import java.util.List;
 
-import kr.or.connect.reservation.dto.Member;
+import kr.or.connect.reservation.dto.User;
 
 public interface UserDbService {
     public UserEntity getUser(String loginUserId);
     public List<UserRoleEntity> getUserRoles(String loginUserId);
-    public void addMember(Member member, boolean admin);
-    public Member getMemberByEmail(String email);
+    public void addMember(User user, boolean admin);
+    public User getMemberByEmail(String email);
 }

@@ -19,7 +19,7 @@ public class ProductRelatedDataDaoSqls {
             + "FROM product_price where product_id = :productId ORDER BY id DESC";
     public static final String SELECT_RESERVATION_USER_COMMENTS =
         "SELECT r_comment.id, r_comment.product_id, r_comment.reservation_info_id, r_comment.score, "
-            + "r.reservation_email, r_comment.comment, r_comment.create_date, r_comment.modify_date "
+            + "r.user_id, r_comment.comment, r_comment.create_date, r_comment.modify_date "
             + "FROM reservation_info AS r JOIN reservation_user_comment AS r_comment ON r.id = r_comment.reservation_info_id "
             + "WHERE r.product_id = :productId ORDER BY r.id DESC LIMIT :start, :limit";
     public static final String SELECT_RESERVATION_USER_COMMENTS_IMAGES =

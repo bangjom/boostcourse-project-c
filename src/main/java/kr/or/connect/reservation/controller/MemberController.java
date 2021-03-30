@@ -1,6 +1,6 @@
 package kr.or.connect.reservation.controller;
 
-import kr.or.connect.reservation.dto.Member;
+import kr.or.connect.reservation.dto.User;
 import kr.or.connect.reservation.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -38,17 +38,17 @@ public class MemberController {
     }
 
     @PostMapping("/join")
-    public String join(@ModelAttribute Member member){
-        member.setPassword(passwordEncoder.encode(member.getPassword()));
-        memberService.addMember(member, false);
+    public String join(@ModelAttribute User user){
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        memberService.addMember(user, false);
         return "redirect:/members/loginform";
     }
 
     @GetMapping("/memberinfo")
     public String memberInfo(Principal principal, ModelMap modelMap){
         String loginId = principal.getName();
-        Member member = memberService.getMemberByEmail(loginId);
-        modelMap.addAttribute("member", member);
+        User user = memberService.getMemberByEmail(loginId);
+        modelMap.addAttribute("member", user);
 
         return "members/memberinfo";
     }

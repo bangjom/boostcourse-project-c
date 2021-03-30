@@ -18,7 +18,7 @@
     </div>
     <div>
         <label>전화번호</label>
-        <input type="text" name="tel">
+        <input type="text" name="phone">
     </div>
     <div>
         <label>이메일</label>

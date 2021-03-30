@@ -3,10 +3,10 @@ package kr.or.connect.reservation.service;
 import java.util.ArrayList;
 import java.util.List;
 
-import kr.or.connect.reservation.dao.MemberDao;
-import kr.or.connect.reservation.dao.MemberRoleDao;
-import kr.or.connect.reservation.dto.Member;
-import kr.or.connect.reservation.dto.MemberRole;
+import kr.or.connect.reservation.dao.UserDao;
+import kr.or.connect.reservation.dao.UserRoleDao;
+import kr.or.connect.reservation.dto.User;
+import kr.or.connect.reservation.dto.UserRole;
 import kr.or.connect.reservation.service.security.UserEntity;
 import kr.or.connect.reservation.service.security.UserRoleEntity;
 
@@ -20,41 +20,41 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService{
 
-    private final MemberDao memberDao;
-    private final MemberRoleDao memberRoleDao;
+    private final UserDao userDao;
+    private final UserRoleDao userRoleDao;
 
     @Override
     public UserEntity getUser(String loginUserId) {
-        Member member = memberDao.getMemberByEmail(loginUserId);
-        return new UserEntity(member.getEmail(), member.getPassword());
+        User user = userDao.getMemberByEmail(loginUserId);
+        return new UserEntity(user.getEmail(), user.getPassword());
     }
 
     @Override
     public List<UserRoleEntity> getUserRoles(String loginUserId) {
-        List<MemberRole> memberRoles = memberRoleDao.getRolesByEmail(loginUserId);
+        List<UserRole> userRoles = userRoleDao.getRolesByEmail(loginUserId);
         List<UserRoleEntity> list = new ArrayList<>();
 
-        for(MemberRole memberRole : memberRoles) {
-            list.add(new UserRoleEntity(loginUserId, memberRole.getRoleName()));
+        for(UserRole userRole : userRoles) {
+            list.add(new UserRoleEntity(loginUserId, userRole.getRoleName()));
         }
         return list;
     }
 
     @Override
     @Transactional
-    public void addMember(Member member, boolean admin) {
-        memberDao.addMember(member);
+    public void addMember(User user, boolean admin) {
+        userDao.addMember(user);
 
-        Member selectedMember = memberDao.getMemberByEmail(member.getEmail());
-        Long memberId = selectedMember.getId();
+        User selectedUser = userDao.getMemberByEmail(user.getEmail());
+        Long userId = selectedUser.getId();
         if(admin) {
-            memberRoleDao.addRole(new MemberRole(memberId,Role.ROLE_ADMIN.toString()));
+            userRoleDao.addRole(new UserRole(userId,Role.ROLE_ADMIN.toString()));
         }
-        memberRoleDao.addRole(new MemberRole(memberId,Role.ROLE_USER.toString()));
+        userRoleDao.addRole(new UserRole(userId,Role.ROLE_USER.toString()));
     }
 
     @Override
-    public Member getMemberByEmail(String email) {
-        return memberDao.getMemberByEmail(email);
+    public User getMemberByEmail(String email) {
+        return userDao.getMemberByEmail(email);
     }
 }

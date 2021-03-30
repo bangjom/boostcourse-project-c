@@ -1,6 +1,6 @@
 package kr.or.connect.reservation.service;
 
-import kr.or.connect.reservation.dao.MemberDao;
+import kr.or.connect.reservation.dao.UserDao;
 import kr.or.connect.reservation.dao.ReservationDao;
 import kr.or.connect.reservation.dao.ReservationPriceDao;
 import kr.or.connect.reservation.dto.*;
@@ -22,27 +22,43 @@ public class ReservationService {
 
     private final ReservationDao reservationDao;
     private final ReservationPriceDao reservationPriceDao;
-    private final MemberDao memberDao;
+    private final UserDao userDao;
 
     private final int NOT_CANCEL = 0;
 
     @Transactional
     public RegistrationResponse reserve(RegistrationRequest request) {
-        Member findMember = memberDao.getMemberById(request.getUserId());
-        Long reservationId = reservationDao.addReservation(new Reservation(request.getProductId(), request.getDisplayInfoId(),
-                findMember.getName(), findMember.getTel(), findMember.getEmail(),
-                LocalDate.parse(request.getReservationYearMonthDay(), DateTimeFormatter.ofPattern("yyyy.MM.dd")),
-                NOT_CANCEL, LocalDate.now(), LocalDate.now()));
+        User findUser = userDao.getMemberById(request.getUserId());
+
+        Long reservationId = reservationDao.addReservation(
+                Reservation.builder()
+                        .productId(request.getProductId())
+                        .displayInfoId(request.getDisplayInfoId())
+                        .userId(findUser.getId())
+                        .reservationDate(LocalDate.parse(request.getReservationYearMonthDay(), DateTimeFormatter.ofPattern("yyyy.MM.dd")))
+                        .cancelFlag(NOT_CANCEL)
+                        .createDate(LocalDate.now())
+                        .modifyDate(LocalDate.now())
+                        .build());
+
         Reservation findReservation = reservationDao.findReservationById(reservationId);
         List<ReservationPrice> findReservationPrices = saveReservationPrices(request, reservationId);
-        return new RegistrationResponse(findReservation.getId(), findReservation.getProductId(),
-                findReservation.getCancelFlag(), findReservation.getDisplayInfoId(), findMember.getId(),
-                Date.valueOf(findReservation.getReservationDate()), Date.valueOf(findReservation.getCreateDate()),
-                Date.valueOf(findReservation.getModifyDate()), findReservationPrices);
+
+        return RegistrationResponse.builder()
+                .id(findReservation.getId())
+                .productId(findReservation.getProductId())
+                .cancelFlag(findReservation.getCancelFlag())
+                .displayInfoId(findReservation.getDisplayInfoId())
+                .userId(findUser.getId())
+                .reservationDate(Date.valueOf(findReservation.getReservationDate()))
+                .createDate(Date.valueOf(findReservation.getCreateDate()))
+                .modifyDate(Date.valueOf(findReservation.getModifyDate()))
+                .prices(findReservationPrices)
+                .build();
     }
 
-    @Transactional
-    public List<ReservationPrice> saveReservationPrices(RegistrationRequest request, Long reservationId) {
+
+    private List<ReservationPrice> saveReservationPrices(RegistrationRequest request, Long reservationId) {
         List<Long> reservationPriceIds = new ArrayList<>();
         for (ReservationPrice reservationPrice : request.getPrices()) {
             Long reservationPriceId = reservationPriceDao.addReservationPrice(new ReservationPrice(reservationId, reservationPrice.getProductPriceId(), reservationPrice.getCount()));
@@ -59,22 +75,19 @@ public class ReservationService {
         return findReservationPrices;
     }
 
-    public List<Order> getOrdersByUser(Member member) {
-        return reservationDao.findOrdersByUserEmail(member.getEmail());
+    public List<Order> getOrdersByUser(User user) {
+        return reservationDao.findOrdersByUserEmail(user.getEmail());
     }
 
     @Transactional
     public Map<String, String> cancelOrders(Long reservationId, String loginId) {
         Map<String, String> result = new HashMap<>();
         result.put("result", "fail");
-        Optional<Reservation> findReservation = Optional.ofNullable(reservationDao.findReservationById(reservationId));
-        if (findReservation.isPresent() && findReservation.get().getReservationEmail().equals(loginId)) {
-            Integer success = reservationDao.cancelReservationsById(reservationId);
-            if (success == 1) {
-                result.put("result", "success");
-            }
+        User findUser = userDao.getMemberByEmail(loginId);
+        Integer success = reservationDao.cancelReservationsById(reservationId, findUser.getId());
+        if (success == 1) {
+            result.put("result", "success");
         }
-
         return result;
     }
 }

@@ -42,8 +42,8 @@ public class ReservationController {
     @GetMapping
     public OrderResponse searchOrders(Principal principal) {
         String loginId = principal.getName();
-        Member member = memberService.getMemberByEmail(loginId);
-        List<Order> findOrders = reservationService.getOrdersByUser(member);
+        User user = memberService.getMemberByEmail(loginId);
+        List<Order> findOrders = reservationService.getOrdersByUser(user);
         return new OrderResponse(findOrders.size(), findOrders);
     }
 

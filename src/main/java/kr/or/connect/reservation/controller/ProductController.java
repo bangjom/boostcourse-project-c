@@ -6,14 +6,7 @@ import io.swagger.annotations.ApiResponses;
 
 import java.util.List;
 
-import kr.or.connect.reservation.dto.DisplayInfoImage;
-import kr.or.connect.reservation.dto.CommentsResponse;
-import kr.or.connect.reservation.dto.DisplayIdResponse;
-import kr.or.connect.reservation.dto.ProductsResponse;
-import kr.or.connect.reservation.dto.Product;
-import kr.or.connect.reservation.dto.ProductImage;
-import kr.or.connect.reservation.dto.ProductPrice;
-import kr.or.connect.reservation.dto.ReservationUserComment;
+import kr.or.connect.reservation.dto.*;
 import kr.or.connect.reservation.service.ProductService;
 
 import lombok.RequiredArgsConstructor;
@@ -61,7 +54,7 @@ public class ProductController {
         @RequestParam(defaultValue = "0") int start
     ) {
         int totalCount = productService.getReservationUserCommentsCountByProductId(productId);
-        List<ReservationUserComment> comments = productService
+        List<DisplayinfosComment> comments = productService
             .getReservationUserCommentsWithImagesByProductId(productId, start);
         return new CommentsResponse(totalCount, comments.size(), comments);
     }
